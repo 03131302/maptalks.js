@@ -106,11 +106,16 @@ class ImageCanvasRenderer extends CanvasRenderer {
             const unloaded = [];
             const resources = new ResourceCache();
             urls.forEach(url => {
-                const img = this.resources.getImage(url);
-                if (img) {
+                if (this.resources.isResourceLoaded(url)) {
+                    const img = this.resources.getImage(url);
                     resources.addResource(url, img);
                 } else {
                     unloaded.push(url);
+                }
+            });
+            this.resources.forEach((url, res) => {
+                if (!resources.isResourceLoaded(url)) {
+                    this.retireImage(res.image);
                 }
             });
             this.resources = resources;
@@ -118,6 +123,10 @@ class ImageCanvasRenderer extends CanvasRenderer {
         }
         this._imageLoaded = true;
         return urls;
+    }
+
+    retireImage(/* image */) {
+
     }
 
     refreshImages() {
@@ -231,6 +240,10 @@ ImageLayer.registerRenderer('gl', class extends ImageGLRenderable(ImageCanvasRen
         }
         super.clearCanvas();
         this.clearGLCanvas();
+    }
+
+    retireImage(image) {
+        this.disposeImage(image);
     }
 
     onRemove() {

@@ -105,6 +105,35 @@ describe('Layer.ImageLayer', function () {
         expect(layer.getImages()).to.be.eql(images);
     });
 
+    it('#setImages and dispose images', function (done) {
+        if (!maptalks.Browser.webgl) {
+            return;
+        }
+        var extent = new maptalks.Rectangle(center, 100, 100).getExtent();
+        var images = [
+            {
+                url : TILE_IMAGE,
+                extent : extent.toJSON()
+            }
+        ];
+        var images2 = [
+            {
+                url : TILE_IMAGE + '2',
+                extent : extent.toJSON()
+            }
+        ];
+        var layer = new maptalks.ImageLayer('images', images, {
+            renderer : 'gl'
+        });
+        layer.once('layerload', function () {
+            layer.setImages(images2);
+            layer.once('layerload', function () {
+                done();
+            });
+        });
+        layer.addTo(map);
+    });
+
     it('#setImages and paint', function (done) {
         var extent = new maptalks.Rectangle(center, 100, 100).getExtent();
         var images = [
