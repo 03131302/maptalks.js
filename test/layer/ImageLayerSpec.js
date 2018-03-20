@@ -68,7 +68,11 @@ describe('Layer.ImageLayer', function () {
             renderer : 'canvas'
         });
         layer.on('layerload', function () {
-            expect(layer).to.be.painted(0, 1, [0, 0, 0, 104]);
+            if (maptalks.Browser.ie) {
+                expect(layer).to.be.painted(0, 1, [0, 0, 0, 58]);
+            } else {
+                expect(layer).to.be.painted(0, 1, [0, 0, 0, 104]);
+            }
             done();
         });
         layer.addTo(map);
