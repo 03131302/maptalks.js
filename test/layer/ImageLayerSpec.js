@@ -56,6 +56,7 @@ describe('Layer.ImageLayer', function () {
     });
 
     it('image opacity', function (done) {
+        map.setBearing(20);
         var extent = new maptalks.Rectangle(center, 100, 100).getExtent();
         var layer = new maptalks.ImageLayer('images', [
             {
@@ -67,7 +68,7 @@ describe('Layer.ImageLayer', function () {
             renderer : 'canvas'
         });
         layer.on('layerload', function () {
-            expect(layer).to.be.painted(1, 1, [0, 0, 0, 128]);
+            expect(layer).to.be.painted(0, 1, [0, 0, 0, 104]);
             done();
         });
         layer.addTo(map);

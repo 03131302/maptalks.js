@@ -162,15 +162,31 @@ class ImageCanvasRenderer extends CanvasRenderer {
 
     _drawImage(image, extent, opacity) {
         let globalAlpha = 0;
+        const ctx = this.context;
         if (opacity < 1) {
-            globalAlpha = this.context.globalAlpha;
-            this.context.globalAlpha = opacity;
+            globalAlpha = ctx.globalAlpha;
+            ctx.globalAlpha = opacity;
         }
         const map = this.getMap();
-        const cExt = extent.convertTo(c => map.coordToContainerPoint(c));
-        this.context.drawImage(image, cExt.xmin, cExt.ymin, cExt.getWidth(), cExt.getHeight());
+        const min = map.coordToPoint(extent.getMin()),
+            max = map.coordToPoint(extent.getMax());
+        const point = map._pointToContainerPoint(min);
+        let x = point.x, y = point.y;
+        const bearing = map.getBearing();
+        if (bearing) {
+            ctx.save();
+            ctx.translate(x, y);
+            if (bearing) {
+                ctx.rotate(-bearing * Math.PI / 180);
+            }
+            x = y = 0;
+        }
+        ctx.drawImage(image, x, y, max.x - min.x, max.y - min.y);
+        if (bearing) {
+            ctx.restore();
+        }
         if (globalAlpha) {
-            this.context.globalAlpha = globalAlpha;
+            ctx.globalAlpha = globalAlpha;
         }
     }
 
