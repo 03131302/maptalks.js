@@ -111,6 +111,7 @@ describe('Layer.ImageLayer', function () {
 
     it('#setImages and dispose images', function (done) {
         if (!maptalks.Browser.webgl) {
+            done();
             return;
         }
         var extent = new maptalks.Rectangle(center, 100, 100).getExtent();
